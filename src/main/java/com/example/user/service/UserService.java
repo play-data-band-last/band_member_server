@@ -108,10 +108,10 @@ public class UserService {
         scheduleClient.updateMemberBoard(id, new AlbumUpdateRequest(
                 request.getName(), request.getImgPath()
         ));
-//        chattingClient.updateMember(id, new AlbumUpdateRequest(
-//                request.getName(), request.getImgPath()
-//        ));
 
+        chattingClient.updateMember(id, new AlbumUpdateRequest(
+                request.getName(), request.getImgPath()
+        ));
     }
 
     public LoginResponse teacherAccountInfo(String email) {
