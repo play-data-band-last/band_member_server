@@ -1,6 +1,5 @@
 package com.example.user.service;
 
-import com.example.user.api.*;
 import com.example.user.common.RestError;
 import com.example.user.common.RestResult;
 import com.example.user.config.JwtService;
@@ -9,6 +8,7 @@ import com.example.user.domain.entity.User;
 import com.example.user.domain.request.*;
 import com.example.user.domain.response.LoginResponse;
 import com.example.user.domain.response.UserResponse;
+import com.example.user.kafka.*;
 import com.example.user.repository.InterestRepository;
 import com.example.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -24,13 +24,18 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final CommunityMemberClient communityMemberClient;
+    //private final CommunityMemberClient communityMemberClient;
     private final JwtService jwtService;
-    private final AlbumClient albumClient;
-    private final BoardClient boardClient;
-    private final ChattingClient chattingClient;
-    private final ScheduleClient scheduleClient;
+    //private final AlbumClient albumClient;
+    //private final BoardClient boardClient;
+    //private final ChattingClient chattingClient;
+    //private final ScheduleClient scheduleClient;
     private final InterestRepository interestRepository;
+    private final CommunityMemberUpdateProducer communityMemberProducer;
+    private final AlbumUpdateProducer albumProducer;
+    private final BoardUpdateProducer boardProducer;
+    private final ChattingUpdateProducer chattingProducer;
+    private final ScheduleUpdateProducer scheduleProducer;
 
     //중복이메일 검사 후 회원가입
     public ResponseEntity<RestResult<Object>> signupCheck(SignupRequest request) {
@@ -93,25 +98,20 @@ public class UserService {
     public void updateUser(Long id, SignupRequest request){
         userRepository.updateUser(id, request);
 
-        communityMemberClient.updateMemberInCommunityMember(new CommunityMemberRequest(id,null
-                , request.getName(), request.getImgPath(), null,null
-        ),id);
+        communityMemberProducer.send(new CommunityMemberRequest(id,null
+                , request.getName(), request.getImgPath(), null,null, id));
 
-        albumClient.memberUpdateInAlbum(id,new AlbumUpdateRequest(
-                request.getName(), request.getImgPath()
-        ));
+        albumProducer.send(new AlbumUpdateRequest(
+                request.getName(), request.getImgPath(), id));
 
-        boardClient.updateMemberBoard(id,new AlbumUpdateRequest(
-                request.getName(), request.getImgPath()
-        ));
+        boardProducer.send(new AlbumUpdateRequest(
+                request.getName(), request.getImgPath(), id));
 
-        scheduleClient.updateMemberBoard(id, new AlbumUpdateRequest(
-                request.getName(), request.getImgPath()
-        ));
+        scheduleProducer.send(new AlbumUpdateRequest(
+                request.getName(), request.getImgPath(), id));
 
-        chattingClient.updateMember(id, new AlbumUpdateRequest(
-                request.getName(), request.getImgPath()
-        ));
+        chattingProducer.send(new AlbumUpdateRequest(
+                request.getName(), request.getImgPath(), id));
     }
 
     public LoginResponse teacherAccountInfo(String email) {

@@ -12,4 +12,5 @@ import lombok.Setter;
 public class AlbumUpdateRequest {
     private String memberName;
     private String memberImage;
+    private Long memberId;
 }
