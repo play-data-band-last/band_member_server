@@ -31,11 +31,10 @@ public class UserService {
     //private final ChattingClient chattingClient;
     //private final ScheduleClient scheduleClient;
     private final InterestRepository interestRepository;
-    private final CommunityMemberUpdateProducer communityMemberProducer;
-    private final AlbumUpdateProducer albumProducer;
-    private final BoardUpdateProducer boardProducer;
     private final ChattingUpdateProducer chattingProducer;
     private final ScheduleUpdateProducer scheduleProducer;
+    private final MemberUpdateProducer memberUpdateProducer;
+
 
     //중복이메일 검사 후 회원가입
     public ResponseEntity<RestResult<Object>> signupCheck(SignupRequest request) {
@@ -94,24 +93,21 @@ public class UserService {
     }
 
 
+    //토픽 memberUpdate에서(단일파티션) album, board, communityMember, schedule, chatting? 에다가 kafka로 병렬적으로 업데이트를 처리함
     @Transactional
     public void updateUser(Long id, SignupRequest request){
         userRepository.updateUser(id, request);
 
-        communityMemberProducer.send(new CommunityMemberRequest(id,null
-                , request.getName(), request.getImgPath(), null,null, id));
 
-        albumProducer.send(new AlbumUpdateRequest(
-                request.getName(), request.getImgPath(), id));
-
-        boardProducer.send(new AlbumUpdateRequest(
-                request.getName(), request.getImgPath(), id));
 
         scheduleProducer.send(new AlbumUpdateRequest(
                 request.getName(), request.getImgPath(), id));
 
         chattingProducer.send(new AlbumUpdateRequest(
                 request.getName(), request.getImgPath(), id));
+
+        memberUpdateProducer.send(new CommunityMemberRequest(id,null
+                , request.getName(), request.getImgPath(), null,null, id));
     }
 
     public LoginResponse teacherAccountInfo(String email) {

@@ -13,26 +13,17 @@ import org.springframework.util.backoff.FixedBackOff;
 
 @Component
 public class TopicConfig {
-    public final static String albumUpdate = "albumUpdate";
-    public final static String boardUpdate = "boardUpdate";
-    public final static String communityMemberUpdate = "communityMemberUpdate";
+    public final static String memberUpdate = "memberUpdate";
+
     public final static String scheduleUpdate = "scheduleUpdate";
     public final static String chattingUpdate = "chattingUpdate";
 
     @Bean
-    public NewTopic albumTopic() {
-        return new NewTopic(albumUpdate, 1, (short)1);
+    public NewTopic memberUpdateTopic() {
+        return new NewTopic(memberUpdate, 1, (short)1);
     }
 
-    @Bean
-    public NewTopic boardTopic() {
-        return new NewTopic(boardUpdate, 1, (short)1);
-    }
 
-    @Bean
-    public NewTopic communityMemberTopic() {
-        return new NewTopic(communityMemberUpdate, 1, (short)1);
-    }
 
     @Bean
     public NewTopic scheduleTopic() {
