@@ -27,6 +27,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final DeleteUserRepository deleteUserRepository;
+    private final MemberDeleteProducer memberDeleteProducer;
     //private final CommunityMemberClient communityMemberClient;
     private final JwtService jwtService;
     //private final AlbumClient albumClient;
@@ -139,14 +140,16 @@ public class UserService {
     public void deleteUser(Long userId){
         User user = userRepository.findById(userId).get();
         deleteUserRepository.save(DeleteUser.builder()
-                .interest(user.getInterest())
+                                .createdAt(null)
+//                .interest(user.getInterest())
                 .imgPath(user.getImgPath())
                 .name(user.getName())
                 .email(user.getEmail())
+                        .createdAt(null)
                 .mbti(user.getMbti())
                 .build());
         user.setIsVailid(Boolean.FALSE);
-
+        memberDeleteProducer.send(userId);
     }
 
 }

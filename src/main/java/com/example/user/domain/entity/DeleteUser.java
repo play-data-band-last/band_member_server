@@ -21,10 +21,10 @@ public class DeleteUser {
     private String email;
     private String password;
     private String mbti;
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
     private String imgPath;
-    private Boolean isVailid = Boolean.TRUE;
 
-    @OneToMany(mappedBy = "user")
-    private List<Interest> interest;
+//
+//    @OneToMany(mappedBy = "deleteUser")
+//    private List<Interest> interest;
 }

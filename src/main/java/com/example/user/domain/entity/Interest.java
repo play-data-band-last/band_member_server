@@ -17,5 +17,10 @@ public class Interest {
     @JsonIgnore
     private User user;
 
+    @ManyToOne
+    @JsonIgnore
+    private DeleteUser deleteUser;
+
+
     private String interest;
 }

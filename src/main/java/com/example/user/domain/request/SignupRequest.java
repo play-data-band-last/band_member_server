@@ -23,6 +23,7 @@ public class SignupRequest {
                 .name(name)
                 .mbti(mbti)
                 .imgPath(imgPath)
+                 .isVailid(Boolean.TRUE)
                  .createdAt(LocalDateTime.now())
                 .build();
     }

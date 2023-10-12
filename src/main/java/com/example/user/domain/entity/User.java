@@ -19,7 +19,9 @@ public class User {
     private String mbti;
     private LocalDateTime createdAt;
     private String imgPath;
+    @Builder.Default
     private Boolean isVailid = Boolean.TRUE;
+    @Builder.Default
     private LocalDateTime deleteTime = LocalDateTime.now();
 
     @OneToMany(mappedBy = "user")
