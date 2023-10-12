@@ -21,6 +21,7 @@ public class DeleteUser {
     private String email;
     private String password;
     private String mbti;
+    @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
     private String imgPath;
 
