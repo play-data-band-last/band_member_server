@@ -3,12 +3,14 @@ package com.example.user.service;
 import com.example.user.common.RestError;
 import com.example.user.common.RestResult;
 import com.example.user.config.JwtService;
+import com.example.user.domain.entity.DeleteUser;
 import com.example.user.domain.entity.Interest;
 import com.example.user.domain.entity.User;
 import com.example.user.domain.request.*;
 import com.example.user.domain.response.LoginResponse;
 import com.example.user.domain.response.UserResponse;
 import com.example.user.kafka.*;
+import com.example.user.repository.DeleteUserRepository;
 import com.example.user.repository.InterestRepository;
 import com.example.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -24,6 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final DeleteUserRepository deleteUserRepository;
     //private final CommunityMemberClient communityMemberClient;
     private final JwtService jwtService;
     //private final AlbumClient albumClient;
@@ -32,7 +35,6 @@ public class UserService {
     //private final ScheduleClient scheduleClient;
     private final InterestRepository interestRepository;
     private final ChattingUpdateProducer chattingProducer;
-    private final ScheduleUpdateProducer scheduleProducer;
     private final MemberUpdateProducer memberUpdateProducer;
 
 
@@ -93,15 +95,10 @@ public class UserService {
     }
 
 
-    //토픽 memberUpdate에서(단일파티션) album, board, communityMember, schedule, chatting? 에다가 kafka로 병렬적으로 업데이트를 처리함
+    //토픽 memberUpdate에서(단일파티션) command, album, board, communityMember, schedule, chatting? 에다가 kafka로 병렬적으로 업데이트를 처리함
     @Transactional
     public void updateUser(Long id, SignupRequest request){
         userRepository.updateUser(id, request);
-
-
-
-        scheduleProducer.send(new AlbumUpdateRequest(
-                request.getName(), request.getImgPath(), id));
 
         chattingProducer.send(new AlbumUpdateRequest(
                 request.getName(), request.getImgPath(), id));
@@ -136,5 +133,20 @@ public class UserService {
         userRepository.save(request.toEntity());
     }
 
+
+    // 멤버 isValid False로 만들고, kafka produce
+    @Transactional
+    public void deleteUser(Long userId){
+        User user = userRepository.findById(userId).get();
+        deleteUserRepository.save(DeleteUser.builder()
+                .interest(user.getInterest())
+                .imgPath(user.getImgPath())
+                .name(user.getName())
+                .email(user.getEmail())
+                .mbti(user.getMbti())
+                .build());
+        user.setIsVailid(Boolean.FALSE);
+
+    }
 
 }

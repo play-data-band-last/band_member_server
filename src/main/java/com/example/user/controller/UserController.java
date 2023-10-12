@@ -60,11 +60,18 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    public void updateUser(@RequestHeader(name = "Authorization") String token1, @RequestBody SignupRequest request){
-        String token = token1.replace("Bearer", "");
-        TokenInfo tokenInfo = jwtService.parseToken(token);
-        System.out.println(tokenInfo.getId());
-        userService.updateUser(tokenInfo.getId(), request);
+    public void updateUser(/*@RequestHeader(name = "Authorization") String token1,*/ @RequestBody SignupRequest request){
+//        String token = token1.replace("Bearer", "");
+//        TokenInfo tokenInfo = jwtService.parseToken(token);
+//        System.out.println(tokenInfo.getId());
+//        userService.updateUser(tokenInfo.getId(), request);
+        userService.updateUser(1l, request);
+
+    }
+
+    @DeleteMapping("/{userId}")
+    public void deleteUser(@PathVariable("userId") Long userId){
+        userService.deleteUser(userId);
     }
 
 

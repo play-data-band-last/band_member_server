@@ -14,8 +14,9 @@ import org.springframework.util.backoff.FixedBackOff;
 @Component
 public class TopicConfig {
     public final static String memberUpdate = "memberUpdate";
+    public final static String memberDelete = "memberDelete";
 
-    public final static String scheduleUpdate = "scheduleUpdate";
+
     public final static String chattingUpdate = "chattingUpdate";
 
     @Bean
@@ -23,12 +24,11 @@ public class TopicConfig {
         return new NewTopic(memberUpdate, 1, (short)1);
     }
 
-
-
     @Bean
-    public NewTopic scheduleTopic() {
-        return new NewTopic(scheduleUpdate, 1, (short)1);
+    public NewTopic memberDeleteopic() {
+        return new NewTopic(memberDelete, 1, (short)1);
     }
+
 
     @Bean
     public NewTopic chattingTopic() {
@@ -40,11 +40,4 @@ public class TopicConfig {
         return new JsonMessageConverter();
     }
 
-    @Bean
-    public CommonErrorHandler errorHandler(KafkaOperations<Object, Object> kafkaOperations) {
-        return new DefaultErrorHandler(
-                new DeadLetterPublishingRecoverer(kafkaOperations),
-                new FixedBackOff(1000L, 2)
-        );
-    }
 }

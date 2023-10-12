@@ -1,17 +1,21 @@
 package com.example.user.domain.entity;
 
+
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity @AllArgsConstructor @NoArgsConstructor(access = AccessLevel.PROTECTED) @Getter @Builder
-@Setter
-@Table(name = "users",
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED) @Getter
+@Builder
+@Table(name = "delete_users",
         indexes = @Index(name = "user_email", columnList = "email"))
-public class User {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class DeleteUser {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String email;
@@ -20,10 +24,7 @@ public class User {
     private LocalDateTime createdAt;
     private String imgPath;
     private Boolean isVailid = Boolean.TRUE;
-    private LocalDateTime deleteTime = LocalDateTime.now();
 
     @OneToMany(mappedBy = "user")
     private List<Interest> interest;
-
-
 }
