@@ -71,7 +71,14 @@ public class UserService {
                     .body(new RestResult<>("CONFLICT",new RestError("EMAIL_CONFLICT","이미 존재하는 이메일 입니다.")));
        }
 
-        User save = userRepository.save(request.toEntity());
+        User save;
+        //회원가입 동시성 문제 발생
+        try {
+            save = userRepository.save(request.toEntity());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(new RestResult<>("CONFLICT",new RestError("EMAIL_CONFLICT","동시성 문제 발생")));
+        }
 
         return ResponseEntity.ok(new RestResult<>("success", save.getId()));
     }
