@@ -13,7 +13,11 @@ import com.example.user.kafka.*;
 import com.example.user.repository.DeleteUserRepository;
 import com.example.user.repository.InterestRepository;
 import com.example.user.repository.UserRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
+import jakarta.websocket.Session;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,9 +43,28 @@ public class UserService {
     private final MemberUpdateProducer memberUpdateProducer;
 
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
+
+    //동시성 해결을 위한 Query Rock
+    @Transactional
+    public Optional<User> findByEmailAndLock(String email) {
+        String sql = "SELECT * FROM User WHERE email = :email FOR UPDATE";
+        Query query = entityManager.createNativeQuery(sql, User.class);
+        query.setParameter("email", email);
+
+        List<User> users = query.getResultList();
+        if (!users.isEmpty()) {
+            return Optional.of(users.get(0));
+        } else {
+            return Optional.empty();
+        }
+    }
     //중복이메일 검사 후 회원가입
+    @Transactional
     public ResponseEntity<RestResult<Object>> signupCheck(SignupRequest request) {
-        Optional<User> byEmail = userRepository.findByEmail(request.getEmail());
+        Optional<User> byEmail = findByEmailAndLock(request.getEmail());
 
         if(byEmail.isPresent()){
             return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -139,9 +162,10 @@ public class UserService {
     @Transactional
     public void deleteUser(Long userId){
         User user = userRepository.findById(userId).get();
+        String serealized_interst = serealize_interest(user);
         deleteUserRepository.save(DeleteUser.builder()
                                 .createdAt(null)
-//                .interest(user.getInterest())
+                .serealized_interest(serealized_interst)
                 .imgPath(user.getImgPath())
                 .name(user.getName())
                 .email(user.getEmail())
@@ -150,6 +174,15 @@ public class UserService {
                 .build());
         user.setIsVailid(Boolean.FALSE);
         memberDeleteProducer.send(userId);
+    }
+
+    private String serealize_interest(User user) {
+        String serialized_interests = "";
+        for (Interest interest:
+             user.getInterest()) {
+            serialized_interests = serialized_interests + interest + ",";
+        }
+        return  serialized_interests;
     }
 
 }

@@ -23,6 +23,8 @@ public class DeleteUser {
     private String mbti;
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
+    //interest 반점 기준으로 반정규화해서 저장
+    private String serealized_interest;
     private String imgPath;
 
 //

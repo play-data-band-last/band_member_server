@@ -10,7 +10,10 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User,Long>, CustomUserRepository {
     //중복 이메일 검사
-    Optional<User> findByEmail(String email);
+    @Query("select u " +
+            "from User u " +
+            "where u.email = :email")
+    Optional<User> findByEmail(@Param("email") String email);
     Optional<User> findByEmailAndPassword(String email, String password);
 
     @Query("select new com.example.user.domain.response.UserResponse(u) " +
