@@ -18,4 +18,5 @@ public class LoginResponse {
     private String mbti;
     private Long userId;
     private List<Interest> interests;
+    private String location;
 }

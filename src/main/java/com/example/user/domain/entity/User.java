@@ -8,6 +8,7 @@ import java.util.List;
 
 @Entity @AllArgsConstructor @NoArgsConstructor(access = AccessLevel.PROTECTED) @Getter @Builder
 @Table(name = "users")
+@Setter
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,6 +18,7 @@ public class User {
     private String mbti;
     private LocalDateTime createdAt;
     private String imgPath;
+    private String location;
 
     @OneToMany(mappedBy = "user")
     private List<Interest> interest;

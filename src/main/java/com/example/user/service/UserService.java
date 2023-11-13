@@ -36,6 +36,8 @@ public class UserService {
     private final BoardUpdateProducer boardProducer;
     private final ChattingUpdateProducer chattingProducer;
     private final ScheduleUpdateProducer scheduleProducer;
+    private final CommentUpdateProducer commentUpdateProducer;
+    private Optional<User> byId;
 
     //중복이메일 검사 후 회원가입
     public ResponseEntity<RestResult<Object>> signupCheck(SignupRequest request) {
@@ -72,6 +74,7 @@ public class UserService {
                 .profileImgPath(byEmailAndPassword.get().getImgPath())
                 .userId(byEmailAndPassword.get().getId())
                 .interests(interests)
+                .location(byEmailAndPassword.get().getLocation())
                 .build();
 
         return ResponseEntity.ok(new RestResult<>("success",loginResponse));
@@ -112,6 +115,9 @@ public class UserService {
 
         chattingProducer.send(new AlbumUpdateRequest(
                 request.getName(), request.getImgPath(), id));
+
+        commentUpdateProducer.send(new AlbumUpdateRequest(
+                request.getName(), request.getImgPath(), id));
     }
 
     public LoginResponse teacherAccountInfo(String email) {
@@ -138,6 +144,23 @@ public class UserService {
     //회원가입
     private void signup(SignupRequest request){
         userRepository.save(request.toEntity());
+    }
+
+    public void updateUserLocation(UserLocationRequest userLocationRequest) {
+        Optional<User> byId = userRepository.findById(userLocationRequest.getId());
+
+        if (byId.isPresent()) {
+            User user = byId.get();
+            System.out.println(userLocationRequest.getLocation());
+            user.setLocation(userLocationRequest.getLocation());
+
+            // 위치 변경사항을 저장
+            userRepository.save(user);
+        } else {
+            // 사용자를 찾을 수 없는 경우 예외처리 또는 로깅 등을 수행
+            System.out.println("User not found with id: " + userLocationRequest.getId());
+        }
+
     }
 
 

@@ -7,6 +7,7 @@ import com.example.user.domain.entity.User;
 import com.example.user.domain.request.LoginRequest;
 import com.example.user.domain.request.SignupRequest;
 import com.example.user.domain.request.TeacherRequest;
+import com.example.user.domain.request.UserLocationRequest;
 import com.example.user.domain.response.LoginResponse;
 import com.example.user.domain.response.UserResponse;
 import com.example.user.service.UserService;
@@ -65,6 +66,13 @@ public class UserController {
         TokenInfo tokenInfo = jwtService.parseToken(token);
         System.out.println(tokenInfo.getId());
         userService.updateUser(tokenInfo.getId(), request);
+    }
+
+    @PutMapping("/location")
+    public void updateUserLocation(@RequestBody UserLocationRequest userLocationRequest) {
+
+
+        userService.updateUserLocation(userLocationRequest);
     }
 
 

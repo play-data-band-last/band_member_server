@@ -19,6 +19,8 @@ public class TopicConfig {
     public final static String scheduleUpdate = "scheduleUpdate";
     public final static String chattingUpdate = "chattingUpdate";
 
+    public final static String commentUpdate = "commentUpdate";
+
     @Bean
     public NewTopic albumTopic() {
         return new NewTopic(albumUpdate, 1, (short)1);
@@ -42,6 +44,11 @@ public class TopicConfig {
     @Bean
     public NewTopic chattingTopic() {
         return new NewTopic(chattingUpdate, 1, (short)1);
+    }
+
+    @Bean
+    public NewTopic commentTopic() {
+        return new NewTopic(commentUpdate, 1, (short)1);
     }
 
     @Bean
