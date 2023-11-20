@@ -13,8 +13,8 @@ import java.util.Map;
 
 @Service
 public class JwtService {
-    @Value("${jwt.secret}")
-    private String secret;
+//    @Value("${jwt.secret}")
+    private String secret="asdaskldjasldjlasdasdaskldjasldjlasdasdaskldjasldjlasdasdaskldjasldjlasdasdaskldjasldjlasd";
     //토큰생성
     public String makeToken(User user){
         Map<String,Object> claims = new HashMap<>();

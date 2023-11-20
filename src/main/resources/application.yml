@@ -1,6 +1,6 @@
 spring:
   kafka:
-    bootstrap-servers: localhost:9093
+    bootstrap-servers: 34.42.237.145:9093
     consumer:
       auto-offset-reset: latest
       group-id: user
@@ -12,10 +12,10 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
-  application:
-    name: BAND-USER-SERVICE
+#  application:
+#    name: BAND-USER-SERVICE
   datasource:
-    url: jdbc:mysql://localhost:3307/user?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://34.42.237.145:3306/user?serverTimezone=Asia/Seoul
     username: root
     password: 1234
   jpa:
@@ -24,11 +24,11 @@ spring:
     show-sql: true
 
 server:
-  port: 0
+  port: 8000
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka
-  instance:
-    instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}
+#eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone: http://localhost:8761/eureka
+#  instance:
+#    instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}
