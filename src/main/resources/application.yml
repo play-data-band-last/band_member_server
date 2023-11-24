@@ -1,6 +1,6 @@
 spring:
   kafka:
-    bootstrap-servers: 34.42.237.145:9093
+    bootstrap-servers: 34.121.154.179:9093
     consumer:
       auto-offset-reset: latest
       group-id: user
@@ -15,7 +15,7 @@ spring:
 #  application:
 #    name: BAND-USER-SERVICE
   datasource:
-    url: jdbc:mysql://34.42.237.145:3306/user?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://34.68.123.82:3306/user?serverTimezone=Asia/Seoul
     username: root
     password: 1234
   jpa:
