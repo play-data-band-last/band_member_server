@@ -12,6 +12,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/bandMember/reserve")
+@CrossOrigin("*")
 public class ReserveController {
     private final ReserveService reserveService;
     @PostMapping("{userId}")

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
-
+@CrossOrigin("*")
 public class UserController {
     private final UserService userService;
     private final JwtService jwtService;
